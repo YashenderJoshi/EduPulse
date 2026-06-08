@@ -1,0 +1,898 @@
+{
+    "apiSpecification": {
+        "version": "1.0.0",
+        "title": "EduPulse Backend API Specification",
+        "description": "Complete API specification for EduPulse school management system",
+        "baseUrl": "http://localhost:5000/api",
+        "authentication": {
+            "type": "JWT Bearer Token",
+            "header": "Authorization: Bearer <token>"
+        },
+        "endpoints": {
+            "authentication": {
+                "studentRegister": {
+                    "method": "POST",
+                    "path": "/auth/student/register",
+                    "description": "Register a new student",
+                    "request": {
+                        "body": {
+                            "studentId": "string (required)",
+                            "name": "string (required)",
+                            "email": "string (required)",
+                            "password": "string (required)",
+                            "department": "string (required)",
+                            "branch": "string (required)",
+                            "year": "number (required)",
+                            "phone": "string (required)"
+                        }
+                    },
+                    "responses": {
+                        "201": {
+                            "description": "Student registered successfully",
+                            "body": {
+                                "token": "string",
+                                "user": {
+                                    "id": "string",
+                                    "name": "string",
+                                    "email": "string",
+                                    "role": "student",
+                                    "studentId": "string",
+                                    "department": "string",
+                                    "branch": "string"
+                                }
+                            }
+                        },
+                        "400": {
+                            "description": "Validation error or user already exists",
+                            "body": {
+                                "message": "User already exists",
+                                "errors": [
+                                    {
+                                        "msg": "string",
+                                        "param": "string",
+                                        "location": "body"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "studentLogin": {
+                    "method": "POST",
+                    "path": "/auth/student/login",
+                    "description": "Student login",
+                    "request": {
+                        "body": {
+                            "studentId": "string (required)",
+                            "department": "string (required)",
+                            "branch": "string (required)",
+                            "password": "string (required)"
+                        }
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Login successful",
+                            "body": {
+                                "token": "string",
+                                "user": {
+                                    "id": "string",
+                                    "name": "string",
+                                    "email": "string",
+                                    "role": "student",
+                                    "studentId": "string",
+                                    "department": "string",
+                                    "branch": "string"
+                                }
+                            }
+                        },
+                        "401": {
+                            "description": "Invalid credentials",
+                            "body": {
+                                "message": "Invalid credentials"
+                            }
+                        }
+                    }
+                },
+                "getCurrentUser": {
+                    "method": "GET",
+                    "path": "/auth/me",
+                    "description": "Get current user profile",
+                    "request": {
+                        "headers": {
+                            "Authorization": "Bearer <token>"
+                        }
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "User profile retrieved",
+                            "body": {
+                                "user": {
+                                    "id": "string",
+                                    "studentId": "string",
+                                    "name": "string",
+                                    "email": "string",
+                                    "role": "string",
+                                    "department": "string",
+                                    "branch": "string",
+                                    "year": "number",
+                                    "phone": "string"
+                                }
+                            }
+                        },
+                        "401": {
+                            "description": "No token provided or invalid token",
+                            "body": {
+                                "message": "No token provided"
+                            }
+                        }
+                    }
+                }
+            },
+            "health": {
+                "healthCheck": {
+                    "method": "GET",
+                    "path": "/health",
+                    "description": "System health check",
+                    "responses": {
+                        "200": {
+                            "description": "Health check successful",
+                            "body": {
+                                "success": true,
+                                "message": "Health check completed",
+                                "data": {
+                                    "status": "OK",
+                                    "timestamp": "string",
+                                    "database": "Connected",
+                                    "uptime": "number",
+                                    "memory": {
+                                        "rss": "number",
+                                        "heapTotal": "number",
+                                        "heapUsed": "number",
+                                        "external": "number"
+                                    },
+                                    "version": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "databaseHealth": {
+                    "method": "GET",
+                    "path": "/health/database",
+                    "description": "Database health check",
+                    "responses": {
+                        "200": {
+                            "description": "Database health check successful",
+                            "body": {
+                                "success": true,
+                                "message": "Database health check completed",
+                                "data": {
+                                    "status": "connected",
+                                    "db": "string",
+                                    "collections": "number",
+                                    "indexes": "number"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "students": {
+                "getProfile": {
+                    "method": "GET",
+                    "path": "/students/profile",
+                    "description": "Get student profile",
+                    "request": {
+                        "headers": {
+                            "Authorization": "Bearer <token>"
+                        }
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Profile retrieved successfully",
+                            "body": {
+                                "user": {
+                                    "id": "string",
+                                    "studentId": "string",
+                                    "name": "string",
+                                    "email": "string",
+                                    "role": "student",
+                                    "department": "string",
+                                    "branch": "string",
+                                    "year": "number",
+                                    "phone": "string"
+                                }
+                            }
+                        },
+                        "401": {
+                            "description": "Unauthorized",
+                            "body": {
+                                "message": "No token provided"
+                            }
+                        }
+                    }
+                },
+                "getDashboard": {
+                    "method": "GET",
+                    "path": "/students/dashboard",
+                    "description": "Get student dashboard data",
+                    "request": {
+                        "headers": {
+                            "Authorization": "Bearer <token>"
+                        }
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Dashboard data retrieved",
+                            "body": {
+                                "attendance": {
+                                    "total": "number",
+                                    "present": "number",
+                                    "percentage": "number"
+                                },
+                                "fees": {
+                                    "pending": "number",
+                                    "totalAmount": "number"
+                                },
+                                "leaves": {
+                                    "pending": "number"
+                                },
+                                "notifications": [
+                                    {
+                                        "id": "string",
+                                        "title": "string",
+                                        "content": "string",
+                                        "type": "string",
+                                        "priority": "string",
+                                        "date": "string"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            },
+            "admin": {
+                "dashboard": {
+                    "method": "GET",
+                    "path": "/admin/dashboard",
+                    "description": "Get admin dashboard statistics",
+                    "request": {
+                        "headers": {
+                            "Authorization": "Bearer <admin_token>"
+                        }
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Dashboard statistics retrieved",
+                            "body": {
+                                "students": "number",
+                                "faculty": "number",
+                                "transportRoutes": "number",
+                                "pendingLeaves": "number",
+                                "totalFeesAmount": "number",
+                                "paidFeesAmount": "number"
+                            }
+                        },
+                        "403": {
+                            "description": "Not authorized",
+                            "body": {
+                                "message": "Not authorized"
+                            }
+                        }
+                    }
+                },
+                "students": {
+                    "getAllStudents": {
+                        "method": "GET",
+                        "path": "/admin/students",
+                        "description": "Get all students with pagination and filters",
+                        "request": {
+                            "headers": {
+                                "Authorization": "Bearer <faculty_admin_token>"
+                            },
+                            "query": {
+                                "page": "number (optional)",
+                                "limit": "number (optional)",
+                                "department": "string (optional)"
+                            }
+                        },
+                        "responses": {
+                            "200": {
+                                "description": "Students retrieved successfully",
+                                "body": {
+                                    "students": [
+                                        {
+                                            "id": "string",
+                                            "studentId": "string",
+                                            "name": "string",
+                                            "email": "string",
+                                            "department": "string",
+                                            "branch": "string",
+                                            "year": "number",
+                                            "phone": "string"
+                                        }
+                                    ],
+                                    "pagination": {
+                                        "current": "number",
+                                        "pages": "number",
+                                        "total": "number"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "createStudent": {
+                        "method": "POST",
+                        "path": "/admin/students",
+                        "description": "Create a new student",
+                        "request": {
+                            "headers": {
+                                "Authorization": "Bearer <faculty_admin_token>"
+                            },
+                            "body": {
+                                "studentId": "string (required)",
+                                "name": "string (required)",
+                                "email": "string (required)",
+                                "password": "string (required)",
+                                "department": "string (required)",
+                                "branch": "string (required)",
+                                "year": "number (required)",
+                                "phone": "string (required)"
+                            }
+                        },
+                        "responses": {
+                            "201": {
+                                "description": "Student created successfully",
+                                "body": {
+                                    "message": "Student created successfully",
+                                    "student": {
+                                        "id": "string",
+                                        "studentId": "string",
+                                        "name": "string",
+                                        "email": "string",
+                                        "role": "student",
+                                        "department": "string",
+                                        "branch": "string",
+                                        "year": "number",
+                                        "phone": "string"
+                                    }
+                                }
+                            },
+                            "400": {
+                                "description": "Validation error",
+                                "body": {
+                                    "errors": [
+                                        {
+                                            "msg": "string",
+                                            "param": "string",
+                                            "location": "body"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "updateStudent": {
+                        "method": "PUT",
+                        "path": "/admin/students/:id",
+                        "description": "Update student information",
+                        "request": {
+                            "headers": {
+                                "Authorization": "Bearer <faculty_admin_token>"
+                            },
+                            "body": {
+                                "name": "string (optional)",
+                                "phone": "string (optional)"
+                            }
+                        },
+                        "responses": {
+                            "200": {
+                                "description": "Student updated successfully",
+                                "body": {
+                                    "id": "string",
+                                    "studentId": "string",
+                                    "name": "string",
+                                    "email": "string",
+                                    "role": "student",
+                                    "department": "string",
+                                    "branch": "string",
+                                    "year": "number",
+                                    "phone": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "attendance": {
+                    "getAttendance": {
+                        "method": "GET",
+                        "path": "/admin/attendance",
+                        "description": "Get attendance records",
+                        "request": {
+                            "headers": {
+                                "Authorization": "Bearer <faculty_admin_token>"
+                            }
+                        },
+                        "responses": {
+                            "200": {
+                                "description": "Attendance records retrieved",
+                                "body": [
+                                    {
+                                        "id": "string",
+                                        "studentId": "string",
+                                        "date": "string",
+                                        "subject": "string",
+                                        "status": "string"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "markAttendance": {
+                        "method": "POST",
+                        "path": "/admin/attendance",
+                        "description": "Mark attendance for a student",
+                        "request": {
+                            "headers": {
+                                "Authorization": "Bearer <faculty_admin_token>"
+                            },
+                            "body": {
+                                "studentId": "string (required)",
+                                "date": "string (required)",
+                                "subject": "string (required)",
+                                "status": "string (required)"
+                            }
+                        },
+                        "responses": {
+                            "201": {
+                                "description": "Attendance marked successfully",
+                                "body": {
+                                    "id": "string",
+                                    "studentId": "string",
+                                    "date": "string",
+                                    "subject": "string",
+                                    "status": "string"
+                                }
+                            }
+                        }
+                    },
+                    "bulkAttendance": {
+                        "method": "POST",
+                        "path": "/admin/attendance/bulk",
+                        "description": "Mark attendance for multiple students",
+                        "request": {
+                            "headers": {
+                                "Authorization": "Bearer <faculty_admin_token>"
+                            },
+                            "body": {
+                                "attendanceList": [
+                                    {
+                                        "studentId": "string",
+                                        "date": "string",
+                                        "subject": "string",
+                                        "status": "string"
+                                    }
+                                ]
+                            }
+                        },
+                        "responses": {
+                            "200": {
+                                "description": "Bulk attendance updated successfully",
+                                "body": {
+                                    "message": "Bulk attendance updated successfully"
+                                }
+                            }
+                        }
+                    }
+                },
+                "fees": {
+                    "getFees": {
+                        "method": "GET",
+                        "path": "/admin/fees",
+                        "description": "Get fee records",
+                        "request": {
+                            "headers": {
+                                "Authorization": "Bearer <finance_admin_token>"
+                            }
+                        },
+                        "responses": {
+                            "200": {
+                                "description": "Fee records retrieved",
+                                "body": [
+                                    {
+                                        "id": "string",
+                                        "studentId": "string",
+                                        "type": "string",
+                                        "amount": "number",
+                                        "status": "string",
+                                        "dueDate": "string"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "createFee": {
+                        "method": "POST",
+                        "path": "/admin/fees",
+                        "description": "Create a fee record",
+                        "request": {
+                            "headers": {
+                                "Authorization": "Bearer <finance_admin_token>"
+                            },
+                            "body": {
+                                "studentId": "string (required)",
+                                "type": "string (required)",
+                                "amount": "number (required)",
+                                "dueDate": "string (required)"
+                            }
+                        },
+                        "responses": {
+                            "201": {
+                                "description": "Fee record created successfully",
+                                "body": {
+                                    "id": "string",
+                                    "studentId": "string",
+                                    "type": "string",
+                                    "amount": "number",
+                                    "status": "Pending",
+                                    "dueDate": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "leaves": {
+                    "getLeaves": {
+                        "method": "GET",
+                        "path": "/admin/leaves",
+                        "description": "Get leave requests",
+                        "request": {
+                            "headers": {
+                                "Authorization": "Bearer <faculty_admin_token>"
+                            }
+                        },
+                        "responses": {
+                            "200": {
+                                "description": "Leave requests retrieved",
+                                "body": [
+                                    {
+                                        "id": "string",
+                                        "studentId": "string",
+                                        "reason": "string",
+                                        "fromDate": "string",
+                                        "toDate": "string",
+                                        "status": "string"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "updateLeaveStatus": {
+                        "method": "PUT",
+                        "path": "/admin/leaves/:id",
+                        "description": "Update leave request status",
+                        "request": {
+                            "headers": {
+                                "Authorization": "Bearer <faculty_admin_token>"
+                            },
+                            "body": {
+                                "status": "string (required)"
+                            }
+                        },
+                        "responses": {
+                            "200": {
+                                "description": "Leave status updated successfully",
+                                "body": {
+                                    "id": "string",
+                                    "studentId": "string",
+                                    "reason": "string",
+                                    "fromDate": "string",
+                                    "toDate": "string",
+                                    "status": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "notifications": {
+                    "getNotifications": {
+                        "method": "GET",
+                        "path": "/admin/notifications",
+                        "description": "Get all notifications",
+                        "request": {
+                            "headers": {
+                                "Authorization": "Bearer <admin_token>"
+                            }
+                        },
+                        "responses": {
+                            "200": {
+                                "description": "Notifications retrieved successfully",
+                                "body": [
+                                    {
+                                        "id": "string",
+                                        "title": "string",
+                                        "content": "string",
+                                        "type": "string",
+                                        "priority": "string",
+                                        "date": "string"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "createNotification": {
+                        "method": "POST",
+                        "path": "/admin/notifications",
+                        "description": "Create a new notification",
+                        "request": {
+                            "headers": {
+                                "Authorization": "Bearer <admin_token>"
+                            },
+                            "body": {
+                                "title": "string (required)",
+                                "content": "string (required)",
+                                "type": "string (required)",
+                                "priority": "string (required)"
+                            }
+                        },
+                        "responses": {
+                            "201": {
+                                "description": "Notification created successfully",
+                                "body": {
+                                    "id": "string",
+                                    "title": "string",
+                                    "content": "string",
+                                    "type": "string",
+                                    "priority": "string",
+                                    "date": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "timetable": {
+                    "getTimetable": {
+                        "method": "GET",
+                        "path": "/admin/timetable",
+                        "description": "Get timetable entries",
+                        "request": {
+                            "headers": {
+                                "Authorization": "Bearer <faculty_admin_token>"
+                            }
+                        },
+                        "responses": {
+                            "200": {
+                                "description": "Timetable retrieved successfully",
+                                "body": [
+                                    {
+                                        "id": "string",
+                                        "day": "string",
+                                        "periods": [
+                                            {
+                                                "time": "string",
+                                                "subject": "string",
+                                                "faculty": "string",
+                                                "room": "string"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "createTimetableEntry": {
+                        "method": "POST",
+                        "path": "/admin/timetable",
+                        "description": "Create a timetable entry",
+                        "request": {
+                            "headers": {
+                                "Authorization": "Bearer <faculty_admin_token>"
+                            },
+                            "body": {
+                                "day": "string (required)",
+                                "periods": [
+                                    {
+                                        "time": "string",
+                                        "subject": "string",
+                                        "faculty": "string",
+                                        "room": "string"
+                                    }
+                                ]
+                            }
+                        },
+                        "responses": {
+                            "201": {
+                                "description": "Timetable entry created successfully",
+                                "body": {
+                                    "id": "string",
+                                    "day": "string",
+                                    "periods": [
+                                        {
+                                            "time": "string",
+                                            "subject": "string",
+                                            "faculty": "string",
+                                            "room": "string"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "faculty": {
+                    "getFaculty": {
+                        "method": "GET",
+                        "path": "/admin/faculty",
+                        "description": "Get all faculty members",
+                        "request": {
+                            "headers": {
+                                "Authorization": "Bearer <faculty_admin_token>"
+                            }
+                        },
+                        "responses": {
+                            "200": {
+                                "description": "Faculty members retrieved successfully",
+                                "body": [
+                                    {
+                                        "id": "string",
+                                        "name": "string",
+                                        "department": "string",
+                                        "email": "string",
+                                        "phone": "string",
+                                        "designation": "string",
+                                        "specialization": "string"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "createFaculty": {
+                        "method": "POST",
+                        "path": "/admin/faculty",
+                        "description": "Create a faculty member",
+                        "request": {
+                            "headers": {
+                                "Authorization": "Bearer <faculty_admin_token>"
+                            },
+                            "body": {
+                                "id": "string (required)",
+                                "name": "string (required)",
+                                "department": "string (required)",
+                                "email": "string (required)",
+                                "phone": "string (required)",
+                                "designation": "string (required)",
+                                "specialization": "string (required)"
+                            }
+                        },
+                        "responses": {
+                            "201": {
+                                "description": "Faculty member created successfully",
+                                "body": {
+                                    "id": "string",
+                                    "name": "string",
+                                    "department": "string",
+                                    "email": "string",
+                                    "phone": "string",
+                                    "designation": "string",
+                                    "specialization": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "transport": {
+                    "getTransportRoutes": {
+                        "method": "GET",
+                        "path": "/admin/transport",
+                        "description": "Get all transport routes",
+                        "request": {
+                            "headers": {
+                                "Authorization": "Bearer <transport_admin_token>"
+                            }
+                        },
+                        "responses": {
+                            "200": {
+                                "description": "Transport routes retrieved successfully",
+                                "body": [
+                                    {
+                                        "id": "string",
+                                        "routeName": "string",
+                                        "driver": "string",
+                                        "stops": ["string"],
+                                        "timing": "string",
+                                        "fare": "number"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "createTransportRoute": {
+                        "method": "POST",
+                        "path": "/admin/transport",
+                        "description": "Create a transport route",
+                        "request": {
+                            "headers": {
+                                "Authorization": "Bearer <transport_admin_token>"
+                            },
+                            "body": {
+                                "id": "string (required)",
+                                "routeName": "string (required)",
+                                "driver": "string (required)",
+                                "stops": ["string"],
+                                "timing": "string (required)",
+                                "fare": "number (required)"
+                            }
+                        },
+                        "responses": {
+                            "201": {
+                                "description": "Transport route created successfully",
+                                "body": {
+                                    "id": "string",
+                                    "routeName": "string",
+                                    "driver": "string",
+                                    "stops": ["string"],
+                                    "timing": "string",
+                                    "fare": "number"
+                                }
+                            }
+                        }
+                    },
+                    "updateTransportRoute": {
+                        "method": "PUT",
+                        "path": "/admin/transport/:id",
+                        "description": "Update a transport route",
+                        "request": {
+                            "headers": {
+                                "Authorization": "Bearer <transport_admin_token>"
+                            },
+                            "body": {
+                                "fare": "number (optional)",
+                                "driver": "string (optional)"
+                            }
+                        },
+                        "responses": {
+                            "200": {
+                                "description": "Transport route updated successfully",
+                                "body": {
+                                    "id": "string",
+                                    "routeName": "string",
+                                    "driver": "string",
+                                    "stops": ["string"],
+                                    "timing": "string",
+                                    "fare": "number"
+                                }
+                            }
+                        }
+                    },
+                    "deleteTransportRoute": {
+                        "method": "DELETE",
+                        "path": "/admin/transport/:id",
+                        "description": "Delete a transport route",
+                        "request": {
+                            "headers": {
+                                "Authorization": "Bearer <transport_admin_token>"
+                            }
+                        },
+                        "responses": {
+                            "200": {
+                                "description": "Transport route deleted successfully",
+                                "body": {
+                                    "message": "Transport route deleted successfully"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "testResults": {
+            "totalSuites": 2,
+            "totalTests": 37,
+            "passedTests": 37,
+            "failedTests": 0,
+            "coverage": "100% of API endpoints tested"
+        },
+        "generatedAt": "2025-10-19T00:00:00.000Z"
+    }
+}

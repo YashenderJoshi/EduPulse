@@ -1,0 +1,20 @@
+# Node
+node_modules/
+dist/
+
+# Vite / Env files
+.env
+.env.*
+fastapi_backend/.env
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,14 @@
+services:
+  frontend:
+    # Use absolute Windows paths for convenience
+    build:
+      context: E:\Project_DRDO\yash
+      dockerfile: frontend.Dockerfile
+
+    volumes:
+      - E:\Project_DRDO\yash\src:/app/src
+      - /app/node_modules
+
+    # If you want to override env for frontend locally, you can add:
+    # environment:
+    #   VITE_API_BASE_URL: "http://localhost:8000/api"

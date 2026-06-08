@@ -1,0 +1,63 @@
+﻿services:
+  mongodb:
+    image: mongo:6.0
+    container_name: edupulse-mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - edupulse_mongo_data:/data/db
+    ports:
+      - "27017:27017"
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+    backend:
+    build:
+      context: ./fastapi_backend
+      dockerfile: Dockerfile
+    container_name: edupulse-backend
+    restart: unless-stopped
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    env_file:
+      - ./fastapi_backend/.env
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./fastapi_backend:/app
+      - ./fastapi_backend/uploads:/app/uploads
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+    healthcheck:
+      # ✅ hit /docs instead of /
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/docs || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
+   frontend:
+    build:
+      context: .
+      dockerfile: frontend.Dockerfile
+    container_name: edupulse-frontend
+    restart: unless-stopped
+    env_file:
+      - ./.env.local
+    depends_on:
+      - backend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./src:/app/src
+      - /app/node_modules
+    command: ["npm", "run", "dev", "--", "--host"]
+
+
+volumes:
+  edupulse_mongo_data:
