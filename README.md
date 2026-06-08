@@ -139,13 +139,13 @@ http://localhost:5173
 
 ### 👨‍💼 Admin
 
-* Email: [yashchaser@gmail.com](mailto:yashchaser@gmail.com)
+* Email: [example@gmail.com](mailto:example@gmail.com)
 * Password: Admin1234
 
 ### 👨‍🎓 Student
 
-* Email: [yashenderkum2002@gmail.com](mailto:yashenderkum2002@gmail.com)
-* Password: Yash1234
+* Email: [example@gmail.com](mailto:example@gmail.com)
+* Password: example1234
 
 ---
 
